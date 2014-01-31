@@ -8,10 +8,15 @@ import (
 
 var voiceTwiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-	<Say voice="woman">Hello. Jeff Lindsay no longer receives calls at this number. His new number is 408 218 0596.</Say>
-    <Gather timeout="10" finishOnKey="1" numDigits="1">
-        <Say voice="woman">Press 1 to have this number sent to your phone via text. Again, Jeff Lindsay's new number is 408 218 0596.</Say>
-    </Gather>
+	<Say voice="woman">Hello. Jeff Lindsay no longer receives calls at this number. His new number is 4 0 8, 2 1 8, 0 5 9 6.</Say>
+	<Sms>My new number: 408 218 0596</Sms>
+	<Say voice="woman">If you can receive them, I just texted the number to you. Again, his new number is 4 0 8, 2 1 8, 0 5 9 6. Goodbye.</Say>
+</Response>
+`
+
+var smsTwiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+	<Sms>I don't get texts at this number anymore. My new number: 408 218 0596</Sms>
 </Response>
 `
 
@@ -23,7 +28,11 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "text/xml")
-		w.Write([]byte(voiceTwiml))
+		if r.URL.Path == "/voice" {
+			w.Write([]byte(voiceTwiml))
+		} else {
+			w.Write([]byte(smsTwiml))
+		}
 	})
 
 	log.Println("Listening on port " + port)
