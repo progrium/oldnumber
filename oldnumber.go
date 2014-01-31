@@ -7,9 +7,6 @@ import (
 	"strings"
 )
 
-var spokenNumber = "5 1 2, 7 8 5, 1 1 9 4"
-var textNumber = "512 785 1194"
-
 var voiceTwiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<Say voice="woman">Hello. Jeff Lindsay no longer receives calls at this number. His new number is, {SPOKEN}.</Say>
@@ -29,6 +26,13 @@ func main() {
 	if port == "" {
 		port = "8888"
 	}
+
+	spokenNumber := os.Getenv("NUMBER")
+	if spokenNumber == "" {
+		spokenNumber = "4 0 8, 5 5 5, 1 2 1 2"
+	}
+	textNumber := strings.Replace(spokenNumber, " ", "", -1)
+	textNumber = strings.Replace(textNumber, ",", " ", -1)
 
 	voiceTwiml = strings.Replace(voiceTwiml, "{SPOKEN}", spokenNumber, -1)
 	voiceTwiml = strings.Replace(voiceTwiml, "{TEXT}", textNumber, -1)
